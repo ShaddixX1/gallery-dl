@@ -17,7 +17,7 @@ class CoomerfansExtractor(Extractor):
 
     category = "coomerfans"
     root = "https://coomerfans.com"
-    directory_fmt = ("{category}", "{username}")
+    directory_fmt = ("{category}", "{platform}", "{username}")
     filename_fmt = "{post_id}_{num}.{extension}"
     archive_fmt = "{post_id}_{num}"
 
