@@ -42,6 +42,7 @@ class CoomerfansPostExtractor(CoomerfansExtractor):
             "description": text.unescape(
                 text.extr(page, '<meta name="description" content="', '"') or ""
             ),
+            "_http_headers": {"Referer": url},
         }
 
         date_str = text.extr(page, '<time datetime="', '"')
@@ -54,7 +55,7 @@ class CoomerfansPostExtractor(CoomerfansExtractor):
         seen = set()
 
         for img_url in text.extract_iter(page, 'src="https://img', '"'):
-            full_url = "https://img" + img_url
+            full_url = text.unescape("https://img" + img_url)
             if "/storage/" not in full_url or full_url in seen:
                 continue
             seen.add(full_url)
@@ -63,6 +64,7 @@ class CoomerfansPostExtractor(CoomerfansExtractor):
             yield Message.Url, full_url, text.nameext_from_url(full_url, dict(data))
 
         for vid_url in text.extract_iter(page, '<source src="', '"'):
+            vid_url = text.unescape(vid_url)
             if vid_url in seen:
                 continue
             seen.add(vid_url)
