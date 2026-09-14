@@ -175,7 +175,7 @@ def sha1(s):
 
 def generate_token(size=16):
     """Generate a random token with hexadecimal digits"""
-    return random.getrandbits(size * 8).to_bytes(size, "big").hex()
+    return os.urandom(size).hex()
 
 
 def format_bytes_decimal(value):
