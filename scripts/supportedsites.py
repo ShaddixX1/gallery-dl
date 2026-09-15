@@ -294,6 +294,10 @@ SUBCATEGORY_MAP = {
     "related-pin"    : "related Pins",
     "related-board"  : "",
 
+    "500px": {
+        "groups": "Photo Groups",
+        "post"  : ("Photos", "Videos"),
+    },
     "arcalive": {
         "user": "User Posts",
     },
@@ -753,7 +757,7 @@ def subcategory_text(bc, c, sc):
         if sc in scm:
             txt = scm[sc]
             if not isinstance(txt, str):
-                txt = ", ".join(txt)
+                txt = " | ".join(txt)
             return txt
 
     if bc and bc in SUBCATEGORY_MAP:
@@ -761,7 +765,7 @@ def subcategory_text(bc, c, sc):
         if sc in scm:
             txt = scm[sc]
             if not isinstance(txt, str):
-                txt = ", ".join(txt)
+                txt = " | ".join(txt)
             return txt
 
     if sc in SUBCATEGORY_MAP:
