@@ -73,8 +73,12 @@ class PawchiveExtractor(Extractor):
         else:
             duplicates = ()
 
-        # prevent files from being sent with gzip compression
-        headers = {"Accept-Encoding": "identity"}
+        headers = {
+            # prevent files from being sent with gzip compression
+            "Accept-Encoding": "identity",
+            # prevent '403 Forbidden' errors
+            "User-Agent"     : util.USERAGENT_GALLERYDL
+        }
 
         posts = self.posts()
         if max_posts := self.config("max-posts"):
@@ -230,11 +234,27 @@ class PawchiveExtractor(Extractor):
     def _extract_attachments(self, post):
         for attachment in post["attachments"]:
             attachment["type"] = "attachment"
+            if "deferred" in attachment and attachment["deferred"]:
+                self._extract_deferred(post, attachment)
         return post["attachments"]
 
     def _extract_inline(self, post):
         for path in self._find_inline(post.get("content") or ""):
             yield {"path": path, "name": path, "type": "inline"}
+
+    def _extract_deferred(self, post, att):
+        url = (f"{self.root}/{post['service']}/user/{post['user']}/"
+               f"post/{post['id']}")
+        html = self.request(url).text
+        if source := text.extr(html, "<source", ">"):
+            src = text.unescape(text.extr(source, 'src="', '"'))
+            if text.ext_from_url(src) == "m3u8":
+                att["path"] = "ytdl:" + src
+                att["_ytdl_manifest"] = "hls"
+                att["_ytdl_manifest_headers"] = post["_http_headers"]
+            else:
+                self.log.warning("Unsupported 'deferred' file")
+                att["path"] = src
 
     def _build_file_generators(self, filetypes):
         if filetypes is None:
