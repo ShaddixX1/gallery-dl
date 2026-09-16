@@ -243,18 +243,25 @@ class PawchiveExtractor(Extractor):
             yield {"path": path, "name": path, "type": "inline"}
 
     def _extract_deferred(self, post, att):
-        url = (f"{self.root}/{post['service']}/user/{post['user']}/"
-               f"post/{post['id']}")
-        html = self.request(url).text
-        if source := text.extr(html, "<source", ">"):
+        if not (html := post.get("_html")):
+            url = (f"{self.root}/{post['service']}/user/{post['user']}/"
+                   f"post/{post['id']}")
+            html = post["_post"] = self.request(url).text
+        name = text.escape(att["name"])
+        if (pos := html.find("<summary>" + name)) >= 0 and \
+                (source := text.extract(html, "<source", ">", pos)[0]):
             src = text.unescape(text.extr(source, 'src="', '"'))
             if text.ext_from_url(src) == "m3u8":
                 att["path"] = "ytdl:" + src
                 att["_ytdl_manifest"] = "hls"
                 att["_ytdl_manifest_headers"] = post["_http_headers"]
             else:
-                self.log.warning("Unsupported 'deferred' file")
                 att["path"] = src
+        elif href := text.iextr(html, name, 'href="', '"'):
+            att["path"] = text.unescape(href)
+        else:
+            self.log.warning("Failed to extract 'deferred' file (%s)",
+                             att["name"])
 
     def _build_file_generators(self, filetypes):
         if filetypes is None:
