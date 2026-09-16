@@ -43,7 +43,12 @@ class PawchiveExtractor(Extractor):
             self.revisions = False
         order = self.config("order-revisions")
         self.revisions_reverse = order[0] in {"r", "a"} if order else False
-        self.deferred = True if self.config("deferred", True) else False
+
+        if deferred := self.config("deferred", True):
+            self.deferred = True
+            self.deferred_only = (deferred == "only")
+        else:
+            self.deferred = self.deferred_only = False
 
         self.api = PawchiveAPI(self)
         self._find_inline = text.re(
@@ -201,22 +206,33 @@ class PawchiveExtractor(Extractor):
             post["count"] = len(files)
             yield Message.Directory, "", post
             if original:
-                for post["num"], file in enumerate(files, 1):
-                    if not file.get("preview_only"):
-                        url = file["url"]
+                if post.get("deferred") and self.deferred_only:
+                    num = 0
+                    for file in files:
+                        if not file.get("deferred"):
+                            continue
+                        num += 1
+                        file["num"] = num
                         file["original"] = True
-                        if previews:
-                            file["_fallback"] = (root_thmb + file["path"],)
-                    elif previews:
-                        url = root_thmb + file["path"]
-                        file["extension"] = "webp"
-                        file["original"] = False
-                    else:
-                        self.log.info("%s: Skipping %s ('preview only')",
-                                      post["id"], file["path"][7:])
-                        continue
-                    post.update(file)
-                    yield Message.Url, url, post
+                        post.update(file)
+                        yield Message.Url, file["url"], post
+                else:
+                    for post["num"], file in enumerate(files, 1):
+                        if not file.get("preview_only"):
+                            url = file["url"]
+                            file["original"] = True
+                            if previews and file["extension"] in exts_thmb:
+                                file["_fallback"] = (root_thmb + file["path"],)
+                        elif previews:
+                            url = root_thmb + file["path"]
+                            file["extension"] = "webp"
+                            file["original"] = False
+                        else:
+                            self.log.info("%s: Skipping %s ('preview only')",
+                                          post["id"], file["path"][7:])
+                            continue
+                        post.update(file)
+                        yield Message.Url, url, post
             else:
                 for post["num"], file in enumerate(files, 1):
                     if file["extension"] in exts_thmb:
@@ -238,9 +254,10 @@ class PawchiveExtractor(Extractor):
     def _extract_attachments(self, post):
         for attachment in post["attachments"]:
             attachment["type"] = "attachment"
-            if "deferred" in attachment and attachment["deferred"] and \
-                    self.deferred:
-                self._extract_deferred(post, attachment)
+            if "deferred" in attachment and attachment["deferred"]:
+                post["deferred"] = True
+                if self.deferred:
+                    self._extract_deferred(post, attachment)
         return post["attachments"]
 
     def _extract_inline(self, post):

@@ -336,6 +336,22 @@ __tests__ = (
 },
 
 {
+    "#url"     : "https://pawchive.pw/patreon/user/119791218/post/165443133",
+    "#comment" : "'deferred' zip archive - only",
+    "#category": ("", "pawchive", "patreon"),
+    "#class"   : pawchive.PawchivePostExtractor,
+    "#options" : {"deferred": "only"},
+    "#pattern" : r"https://t1.pawchive.pw/f/d42064d0f9d59fcb/202608.zip\?e=\d+&s=\w+",
+    "#count"   : 1,
+
+    "deferred" : True,
+    "extension": "zip",
+    "filename" : "202608",
+    "num"      : 1,
+    "original" : True,
+},
+
+{
     "#url"     : "https://pawchive.st/patreon/user/3295915",
     "#category": ("", "pawchive", "patreon"),
     "#class"   : pawchive.PawchiveUserExtractor,
