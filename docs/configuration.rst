@@ -4261,11 +4261,16 @@ Type
     * ``string``
 Default
     ``"disk"``
+Example
+    ``"disk:86400"``
 Description
     Selects how to cache user profile data.
 
     ``true`` | ``"disk"``
         Cache user data on disk
+    ``"disk:EXP"``
+        Cache user data on disk.
+        Refresh cache entry after ``EXP`` seconds.
     ``false`` | ``"memory"``
         Cache user data in memory
 
