@@ -43,6 +43,7 @@ class PawchiveExtractor(Extractor):
             self.revisions = False
         order = self.config("order-revisions")
         self.revisions_reverse = order[0] in {"r", "a"} if order else False
+        self.deferred = True if self.config("deferred", True) else False
 
         self.api = PawchiveAPI(self)
         self._find_inline = text.re(
@@ -138,7 +139,10 @@ class PawchiveExtractor(Extractor):
                 try:
                     path = file["path"]
                 except KeyError:
-                    if warning:
+                    if file.get("deferred"):
+                        self.log.info("%s: Skipping %s ('deferred')",
+                                      post["id"], file.get("name"))
+                    elif warning:
                         warning = False
                         self.log.debug(file)
                         self.log.warning("%s: Incomplete import", post["id"])
@@ -234,7 +238,8 @@ class PawchiveExtractor(Extractor):
     def _extract_attachments(self, post):
         for attachment in post["attachments"]:
             attachment["type"] = "attachment"
-            if "deferred" in attachment and attachment["deferred"]:
+            if "deferred" in attachment and attachment["deferred"] and \
+                    self.deferred:
                 self._extract_deferred(post, attachment)
         return post["attachments"]
 

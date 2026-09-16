@@ -5327,6 +5327,17 @@ Note
     This requires 1 additional HTTP request per post.
 
 
+extractor.pawchive.deferred
+---------------------------
+Type
+    ``bool``
+Default
+    ``true``
+Description
+    | Extract and download ``deferred`` files.
+    | (i.e. files marked with "Exceeded file size limit, available temporarily")
+
+
 extractor.pawchive.domain
 -------------------------
 Type

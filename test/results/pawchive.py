@@ -282,6 +282,16 @@ __tests__ = (
 },
 
 {
+    "#url"     : "https://pawchive.pw/patreon/user/38478982/post/169522842",
+    "#comment" : "'deferred' m3u8 video - disabled",
+    "#category": ("", "pawchive", "patreon"),
+    "#class"   : pawchive.PawchivePostExtractor,
+    "#options" : {"deferred": False},
+    "#count"   : 0,
+    "#log"     : "~169522842: Skipping 745114598.mp4 ('deferred')",
+},
+
+{
     "#url"     : "https://pawchive.pw/patreon/user/119791218/post/165443133",
     "#comment" : "'deferred' zip archive",
     "#category": ("", "pawchive", "patreon"),
