@@ -916,6 +916,8 @@ class InstagramAPI():
         endpoint = f"/v1/users/{user_id}/info/"
         try:
             return self._call(endpoint, notfound="user")["user"]
+        except self.extractor.exc.ControlException:
+            raise
         except Exception:
             raise self.exc.NotFoundError("user")
 
@@ -929,6 +931,8 @@ class InstagramAPI():
         try:
             return self._call(
                 endpoint, params=params, notfound="user")["data"]["user"]
+        except self.extractor.exc.ControlException:
+            raise
         except Exception:
             raise self.exc.NotFoundError("user")
 
@@ -946,6 +950,8 @@ class InstagramAPI():
                 user = result["user"]
                 if user["username"].lower() == name:
                     return user
+        except self.extractor.exc.ControlException:
+            raise
         except Exception:
             pass
         raise self.exc.NotFoundError("user")
