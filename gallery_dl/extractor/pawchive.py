@@ -268,7 +268,7 @@ class PawchiveExtractor(Extractor):
         if not (html := post.get("_html")):
             url = (f"{self.root}/{post['service']}/user/{post['user']}/"
                    f"post/{post['id']}")
-            html = post["_post"] = self.request(url).text
+            html = post["_html"] = self.request(url).text
         name = text.escape(att["name"])
         if (pos := html.find("<summary>" + name)) >= 0 and \
                 (source := text.extract(html, "<source", ">", pos)[0]):
@@ -279,7 +279,8 @@ class PawchiveExtractor(Extractor):
                 att["_ytdl_manifest_headers"] = post["_http_headers"]
             else:
                 att["path"] = src
-        elif href := text.iextr(html, name, 'href="', '"'):
+        elif (pos := html.find(f">Download {name}<")) >= 0 and \
+                (href := text.rextr(html, 'href="', '"', pos)):
             att["path"] = text.unescape(href)
         else:
             self.log.warning("Failed to extract 'deferred' file (%s)",
