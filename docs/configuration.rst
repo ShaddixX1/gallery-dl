@@ -1492,6 +1492,16 @@ Description
     for available ``PRAGMA`` statements and further details.
 
 
+extractor.*.archive-reuse
+-------------------------
+Type
+    ``bool``
+Default
+    ``false``
+Description
+    Reuse existing archive database connections.
+
+
 extractor.*.archive-table
 -------------------------
 Type
@@ -9496,6 +9506,7 @@ Description
     * `archive-format <extractor.*.archive-format_>`__
     * `archive-prefix <extractor.*.archive-prefix_>`__
     * `archive-pragma <extractor.*.archive-pragma_>`__
+    * `archive-reuse  <extractor.*.archive-reuse_>`__
     * `archive-table  <extractor.*.archive-table_>`__
 
 
@@ -10096,6 +10107,7 @@ Description
     * `archive-format <extractor.*.archive-format_>`__
     * `archive-prefix <extractor.*.archive-prefix_>`__
     * `archive-pragma <extractor.*.archive-pragma_>`__
+    * `archive-reuse  <extractor.*.archive-reuse_>`__
     * `archive-table  <extractor.*.archive-table_>`__
 
 
@@ -10197,6 +10209,7 @@ Description
     * `archive-format <extractor.*.archive-format_>`__
     * `archive-prefix <extractor.*.archive-prefix_>`__
     * `archive-pragma <extractor.*.archive-pragma_>`__
+    * `archive-reuse  <extractor.*.archive-reuse_>`__
     * `archive-table  <extractor.*.archive-table_>`__
 
 
