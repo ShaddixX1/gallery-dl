@@ -14,92 +14,77 @@ BASE_PATTERN = r"(?:https?://)?(?:www\.)?coomerfans\.com"
 
 class CoomerfansExtractor(Extractor):
     """Base class for coomerfans extractors"""
-
     category = "coomerfans"
     root = "https://coomerfans.com"
-    directory_fmt = ("{category}", "{platform}", "{username}")
-    filename_fmt = "{post_id}_{num}.{extension}"
-    archive_fmt = "{post_id}_{num}"
+    directory_fmt = ("{category}", "{service}", "{username} ({user})")
+    filename_fmt = "{id}_{num}.{extension}"
+    archive_fmt = "{service}_{user}_{id}_{num}"
 
 
 class CoomerfansPostExtractor(CoomerfansExtractor):
     """Extractor for individual posts on coomerfans.com"""
-
     subcategory = "post"
     pattern = BASE_PATTERN + r"/p/(\d+)/(\d+)/(\w+)"
-    example = "https://coomerfans.com/p/12345/67890/onlyfans"
+    example = "https://coomerfans.com/p/12345/67890/SERVICE"
 
     def items(self):
-        post_id, creator_id, platform = self.groups
-        url = f"{self.root}/p/{post_id}/{creator_id}/{platform}"
+        post_id, creator_id, service = self.groups
+        url = f"{self.root}/p/{post_id}/{creator_id}/{service}"
         page = self.request(url).text
+        extr = text.extract_from(page)
 
-        data = {
-            "post_id": text.parse_int(post_id),
-            "creator_id": text.parse_int(creator_id),
-            "platform": platform,
-            "username": text.extr(page, f"/u/{platform}/{creator_id}/", '"') or "",
-            "description": text.unescape(
-                text.extr(page, '<meta name="description" content="', '"') or ""
-            ),
+        post = {
+            "id"      : text.parse_int(post_id),
+            "user"    : text.parse_int(creator_id),
+            "service" : service,
+            "username": text.unescape(extr('class="model-name">', '<')),
+            "title"   : text.unescape(extr('<h1>', '<')),
+            "date"    : self.parse_datetime_iso(extr(
+                'class="post-date">Added ', ' &#43;')),
+            "content" : extr("<p>", "</p>"),
+            "post_url": url,
             "_http_headers": {"Referer": url},
         }
 
-        date_str = text.extr(page, '<time datetime="', '"')
-        if date_str:
-            data["date"] = self.parse_datetime_iso(date_str)
-
-        yield Message.Directory, "", data
-
-        num = 0
-        seen = set()
-
-        for img_url in text.extract_iter(page, 'src="https://img', '"'):
-            full_url = text.unescape("https://img" + img_url)
-            if "/storage/" not in full_url or full_url in seen:
+        pattern = text.re(r'<(?:img|sourc(e)) src="([^"]+)')
+        body = extr('class="post-body"', '\n                </div>')
+        files = {}
+        for video, url in pattern.findall(body):
+            url = text.unescape(url)
+            file = text.nameext_from_url(url)
+            if file["filename"] in files:
                 continue
-            seen.add(full_url)
-            num += 1
-            data["num"] = num
-            yield Message.Url, full_url, text.nameext_from_url(full_url, dict(data))
+            file["hash"] = hash = file["filename"]
+            file["type"] = "video" if video else "image"
+            file["url"] = url
+            files[hash] = file
 
-        for vid_url in text.extract_iter(page, '<source src="', '"'):
-            vid_url = text.unescape(vid_url)
-            if vid_url in seen:
-                continue
-            seen.add(vid_url)
-            num += 1
-            data["num"] = num
-            yield Message.Url, vid_url, text.nameext_from_url(vid_url, dict(data))
+        post["count"] = len(files)
+        yield Message.Directory, "", post
+        for post["num"], file in enumerate(files.values(), 1):
+            post.update(file)
+            yield Message.Url, file["url"], post
 
 
 class CoomerfansCreatorExtractor(CoomerfansExtractor):
     """Extractor for all posts from a coomerfans creator"""
-
     subcategory = "creator"
-    pattern = BASE_PATTERN + r"/u/(\w+)/(\d+)/([^/?#]+)"
+    pattern = BASE_PATTERN + r"/u/(\w+)/(\d+)/([^/?#]+)(?:\?page=(\d+))?"
     example = "https://coomerfans.com/u/onlyfans/12345/USERNAME"
 
     def items(self):
-        platform, creator_id, username = self.groups
-        url = f"{self.root}/u/{platform}/{creator_id}/{username}"
+        service, creator_id, username, page_num = self.groups
+        url = f"{self.root}/u/{service}/{creator_id}/{username}"
         data = {"_extractor": CoomerfansPostExtractor}
 
-        page_num = 1
+        params = {"page": text.parse_int(page_num, 1)}
         while True:
-            params = {"page": page_num} if page_num > 1 else {}
             page = self.request(url, params=params).text
 
-            seen = set()
-            found = False
-            for post_path in text.extract_iter(page, 'href="/p/', '"'):
-                post_url = f"{self.root}/p/{post_path}"
-                if post_url in seen:
-                    continue
-                seen.add(post_url)
-                found = True
-                yield Message.Queue, post_url, data
+            path = None
+            for path in text.extract_iter(page, '<h3><a href="', '"'):
+                yield Message.Queue, self.root + path, data
 
-            if not found or f"?page={page_num + 1}" not in page:
-                return
-            page_num += 1
+            if path is None or ">Next</a>" not in page:
+                break
+            params["page"] += 1
