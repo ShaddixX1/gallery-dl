@@ -375,6 +375,13 @@ Consider all listed sites to potentially be NSFW.
         <span title="https://kemono.cr/SERVICE/user/12345">User Profiles</span></td>
     <td>Supported</td>
 </tr>
+<tr id="coomerfans" title="coomerfans">
+    <td>Coomer Fans</td>
+    <td>https://coomerfans.com/</td>
+    <td><span title="https://coomerfans.com/u/onlyfans/12345/USERNAME">Creators</span> |
+        <span title="https://coomerfans.com/p/12345/67890/SERVICE">Posts</span></td>
+    <td></td>
+</tr>
 <tr id="cosmos" title="cosmos">
     <td>Cosmos</td>
     <td>https://www.cosmos.so/</td>
