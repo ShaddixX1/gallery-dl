@@ -60,6 +60,7 @@ CATEGORY_MAP = {
     "comedywildlifephoto": "Comedy Wildlife Photography Awards",
     "comicartfans"   : "Comic Art Fans",
     "comicvine"      : "Comic Vine",
+    "coomerfans"     : "Coomer Fans",
     "cyberfile"      : "CyberFile",
     "dankefuerslesen": "Danke fürs Lesen",
     "dcinside"       : "DCinside",
