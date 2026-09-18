@@ -436,6 +436,22 @@ Special Values
         ``". "``
 
 
+extractor.*.path-sub
+--------------------
+Type
+    ``object`` (`name` → `replacement`)
+Example
+    .. code:: json
+
+        {
+            "."  : "[dot]",
+            ".." : "[dotdot]",
+            "foo": "bar"
+        }
+Description
+    Substitute generated path segment names with the given alternative.
+
+
 extractor.*.path-convert
 ------------------------
 Type
