@@ -88,11 +88,11 @@ def main():
             if isinstance(env, dict):
                 env = env.dicts()
             environ = os.environ
-            if env.pop("/expand", True):
-                for key, value in env.items():
+            if config.get((), "environment-expand", True):
+                for key, value in env:
                     environ[key] = util.expand_path(value)
             else:
-                for key, value in env.items():  # faster than '.update()'
+                for key, value in env:  # faster than '.update()'
                     environ[key] = value
 
         output.configure_standard_streams()

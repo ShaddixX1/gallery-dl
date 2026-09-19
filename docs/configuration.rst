@@ -10898,11 +10898,20 @@ Example
 Description
     Additional environment variable values
     that get set during program initialization.
-
-    | References to other environment variables and tildes `~` get expanded.
-    | Include a ``"/expand": false`` name-value pair to disable this behavior.
 Note
     These can then be used as replacements in |Path|_ values.
+
+
+environment-expand
+------------------
+Type
+    ``bool``
+Default
+    ``true``
+Description
+    Expand environment variables and tildes `~` in |environment|_ values.
+
+.. |environment| replace:: ``environment``
 
 
 filters-environment
