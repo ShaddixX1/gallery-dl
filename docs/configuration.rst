@@ -3137,6 +3137,31 @@ Description
     Also extract subfolder content.
 
 
+extractor.directlink.transform
+------------------------------
+Type
+    * ``object`` (`pattern` → `replacement`)
+    * ``list`` of [`pattern`, `replacement`] pairs
+Example
+    .. code:: json
+
+        {
+            "/foo" : "/bar/baz",
+            "([?&])dl=0\\b": "\\1dl=1"
+        }
+
+    .. code:: json
+
+        [
+            ["/foo" , "/bar/baz"],
+            ["([?&])dl=0\\b": "\\1dl=1"]
+        ]
+Description
+    Transform URLs by substituting all matching `patterns`
+    with their respective `replacements`
+    using `re.sub() <https://docs.python.org/3/library/re.html#re.sub>`_.
+
+
 extractor.discord.embeds
 ------------------------
 Type
