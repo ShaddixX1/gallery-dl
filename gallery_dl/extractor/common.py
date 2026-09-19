@@ -1454,7 +1454,7 @@ except AttributeError:
     ZSTD = False
 
 # set (urllib3) warnings filter
-action = config.get((), "warnings", "default")
+action = config.getg("warnings", "default")
 if action:
     try:
         import warnings
