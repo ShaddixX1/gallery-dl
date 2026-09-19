@@ -10879,7 +10879,8 @@ Description
 environment
 -----------
 Type
-    ``object`` (`name` → `value`)
+    * ``object`` (`name` → `value`)
+    * ``list`` of [`name`, `value`] pairs
 Example
     .. code:: json
 
@@ -10887,6 +10888,13 @@ Example
             "_config" : "~/.config/gallery-dl",
             "_cookies": "$_config/cookies"
         }
+
+    .. code:: json
+
+        [
+            ["_config" , "~/.config/gallery-dl"],
+            ["_cookies", "$_config/cookies"]
+        ]
 Description
     Additional environment variable values
     that get set during program initialization.

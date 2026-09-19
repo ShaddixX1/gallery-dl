@@ -85,6 +85,8 @@ def main():
 
         # environment variables
         if env := config.get((), "environment"):
+            if isinstance(env, dict):
+                env = env.dicts()
             environ = os.environ
             if env.pop("/expand", True):
                 for key, value in env.items():
