@@ -79,9 +79,27 @@ __tests__ = (
 },
 
 {
+    "#url"    : "https://www.xasiat.com/categories/gravure-idols/",
+    "#comment": "videos",
+    "#class"  : xasiat.XasiatCategoryExtractor,
+    "#pattern": xasiat.XasiatVideoExtractor.pattern,
+    "#range"  : "1-50",
+    "#count"  : 50,
+},
+
+{
     "#url"    : "https://www.xasiat.com/albums/categories/gravure-idols/",
     "#class"  : xasiat.XasiatCategoryExtractor,
     "#pattern": xasiat.XasiatAlbumExtractor.pattern,
+    "#range"  : "1-50",
+    "#count"  : 50,
+},
+
+{
+    "#url"    : "https://www.xasiat.com/tags/japan/",
+    "#comment": "videos",
+    "#class"  : xasiat.XasiatTagExtractor,
+    "#pattern": xasiat.XasiatVideoExtractor.pattern,
     "#range"  : "1-50",
     "#count"  : 50,
 },
@@ -95,11 +113,35 @@ __tests__ = (
 },
 
 {
+    "#url"    : "https://www.xasiat.com/fr/albums/tags/japan/",
+    "#comment": "'fr' lang",
+    "#class"  : xasiat.XasiatTagExtractor,
+    "#pattern": xasiat.XasiatAlbumExtractor.pattern,
+    "#range"  : "1-50",
+    "#count"  : 50,
+},
+
+{
+    "#url"    : "https://www.xasiat.com/models/umi-yatsugake/",
+    "#comment": "videos",
+    "#class"  : xasiat.XasiatModelExtractor,
+    "#pattern": xasiat.XasiatVideoExtractor.pattern,
+    "#count"  : 35,
+},
+
+{
+    "#url"    : "https://www.xasiat.com/ja/models/umi-yatsugake/",
+    "#comment": "'ja' lang",
+    "#class"  : xasiat.XasiatModelExtractor,
+    "#pattern": xasiat.XasiatVideoExtractor.pattern,
+    "#count"  : 35,
+},
+
+{
     "#url"    : "https://www.xasiat.com/albums/models/remu-suzumori/",
     "#class"  : xasiat.XasiatModelExtractor,
     "#pattern": xasiat.XasiatAlbumExtractor.pattern,
-    "#range"  : "1-15",
-    "#count"  : 15,
+    "#count"  : 47,
 },
 
 {

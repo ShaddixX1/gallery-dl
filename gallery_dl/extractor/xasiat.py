@@ -7,11 +7,9 @@
 """Extractors for https://www.xasiat.com"""
 
 from .common import Extractor, Message
-from .. import text
-import time
+from .. import text, dt
 
-BASE_PATTERN = r"(?:https?://)?(?:www\.)?xasiat\.com((?:/fr|/ja)?"
-ALBUM_PATTERN = BASE_PATTERN + r"/albums"
+BASE_PATTERN = r"(?:https?://)?(?:www\.)?xasiat\.com((?:/(fr|ja))?"
 
 
 class XasiatExtractor(Extractor):
@@ -19,45 +17,55 @@ class XasiatExtractor(Extractor):
     root = "https://www.xasiat.com"
 
     def items(self):
-        data = {"_extractor": XasiatAlbumExtractor}
+        data = {"_extractor": (XasiatAlbumExtractor if self.groups[2] else
+                               XasiatVideoExtractor)}
         for url in self.posts():
             yield Message.Queue, url, data
 
     def posts(self):
         return self._pagination(*self.groups)
 
-    def _pagination(self, path, pnum=1):
+    def _end_marker(self, lang):
+        next = ("Next" if lang is None else
+                "次へ" if lang == "ja" else "En avant")
+        return f"><span>{next}</span><"
+
+    def _pagination(self, path, lang, type, pnum=1):
         url = f"{self.root}{path}/"
-        find_posts = text.re(r'class="item  ">\s*<a href="([^"]+)').findall
+        type = "video" if type is None else "album"
+        params = {
+            "mode"    : "async",
+            "function": "get_block",
+            "block_id": f"list_{type}s_common_{type}s_list",
+            "sort_by" : "post_date",
+            "from"    : pnum,
+        }
+        headers = {
+            "X-Requested-With": "XMLHttpRequest",
+        }
 
+        marker = self._end_marker(lang)
+        find_posts = text.re(r'(?s)class="item  ">\s*<a href="([^"]+)').findall
         while True:
-            params = {
-                "mode": "async",
-                "function": "get_block",
-                "block_id": "list_albums_common_albums_list",
-                "sort_by": "post_date",
-                "from": pnum,
-                "_": int(time.time() * 1000),
-            }
+            params["_"] = int(dt.time.time() * 1000)
 
-            page = self.request(url, params=params).text
+            page = self.request(url, params=params, headers=headers).text
             yield from find_posts(page)
 
-            if "<span>Next</span>" in page:
+            if marker in page:
                 break
-
-            pnum += 1
+            params["from"] += 1
 
 
 class XasiatAlbumExtractor(XasiatExtractor):
     subcategory = "album"
     directory_fmt = ("{category}", "{title}")
     archive_fmt = "{album_url}_{num}"
-    pattern = ALBUM_PATTERN + r"/(\d+)/[^/?#]+)"
+    pattern = BASE_PATTERN + r"/albums/(\d+)/[^/?#]+)"
     example = "https://www.xasiat.com/albums/12345/TITLE/"
 
     def items(self):
-        path, album_id = self.groups
+        path, lang, album_id = self.groups
         url = f"{self.root}{path}/"
         response = self.request(url)
         extr = text.extract_from(response.text)
@@ -78,6 +86,7 @@ class XasiatAlbumExtractor(XasiatExtractor):
             "album_url": response.url,
             "album_id": text.parse_int(album_id),
             "count": len(urls),
+            "lang": "en" if lang is None else lang,
         }
 
         yield Message.Directory, "", data
@@ -95,7 +104,7 @@ class XasiatVideoExtractor(XasiatExtractor):
     example = "https://www.xasiat.com/videos/12345/TITLE/"
 
     def items(self):
-        path, video_id = self.groups
+        path, lang, video_id = self.groups
         url = f"{self.root}{path}/"
         response = self.request(url)
         extr = text.extract_from(response.text)
@@ -122,6 +131,7 @@ class XasiatVideoExtractor(XasiatExtractor):
             "video_id": text.parse_int(video_id),
             "count": 1,
             "type": "video",
+            "lang": "en" if lang is None else lang,
         }
 
         info = extr('class="info-content"', "</div>")
@@ -146,51 +156,51 @@ class XasiatVideoExtractor(XasiatExtractor):
 
 class XasiatTagExtractor(XasiatExtractor):
     subcategory = "tag"
-    pattern = ALBUM_PATTERN + r"/tags/[^/?#]+)"
+    pattern = BASE_PATTERN + r"/(albums/)?tags/[^/?#]+)"
     example = "https://www.xasiat.com/albums/tags/TAG/"
 
 
 class XasiatCategoryExtractor(XasiatExtractor):
     subcategory = "category"
-    pattern = ALBUM_PATTERN + r"/categories/[^/?#]+)"
+    pattern = BASE_PATTERN + r"/(albums/)?categories/[^/?#]+)"
     example = "https://www.xasiat.com/albums/categories/CATEGORY/"
 
 
 class XasiatModelExtractor(XasiatExtractor):
     subcategory = "model"
-    pattern = ALBUM_PATTERN + r"/models/[^/?#]+)"
+    pattern = BASE_PATTERN + r"/(albums/)?models/[^/?#]+)"
     example = "https://www.xasiat.com/albums/models/MODEL/"
 
 
 class XasiatSearchExtractor(XasiatExtractor):
     subcategory = "search"
-    pattern = BASE_PATTERN + r"/search/)([^/?#]+)"
+    pattern = BASE_PATTERN + r"/(search/))([^/?#]+)"
     example = "https://www.xasiat.com/search/QUERY/"
 
-    def _pagination(self, path, query, pnum=1):
+    def _pagination(self, path, lang, type, query, pnum=1):
         url = f"{self.root}{path}{query}/"
+        params = {
+            "mode"    : "async",
+            "function": "get_block",
+            "block_id": "list_albums_albums_list_search_result",
+            "q"       : text.unquote(query),
+            "category_ids": "",
+            "sort_by" : "",
+        }
         headers = {
             "X-Requested-With": "XMLHttpRequest",
         }
-        params = {
-            "mode": "async",
-            "function": "get_block",
-            "block_id": "list_albums_albums_list_search_result",
-            "q": text.unquote(query),
-            "category_ids": "",
-            "sort_by": "",
-        }
 
+        marker = self._end_marker(lang)
         find_posts = text.re(r'class="item  ">\s*<a href="([^"]+)').findall
         while True:
             params["from_videos"] = pnum
             params["from_albums"] = pnum
-            params["_"] = int(time.time() * 1000),
+            params["_"] = int(dt.time.time() * 1000),
 
-            page = self.request(url, headers=headers, params=params).text
+            page = self.request(url, params=params, headers=headers).text
             yield from find_posts(page)
 
-            if "<span>Next</span>" in page:
+            if marker in page:
                 break
-
             pnum += 1
