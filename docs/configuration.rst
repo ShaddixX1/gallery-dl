@@ -8328,6 +8328,21 @@ Description
     For ``Category:`` pages, recursively descent into subcategories.
 
 
+extractor.xasiat.format
+-----------------------
+Type
+    ``string``
+Default
+    ``"best"``
+Description
+    Selects video download format.
+
+    ``"HD"`` | ``"hd"`` | ``"best"``
+        "Best Quality" format
+    ``"SD"`` | ``"sd"`` | ``"480p"``
+        "SD" format
+
+
 extractor.[xenforo].attachments
 -------------------------------
 Type
@@ -8432,7 +8447,7 @@ Description
 extractor.ytdl.deprecations
 ---------------------------
 Type
-    ´´bool´´
+    ``bool``
 Default
     ``false``
 Description
@@ -8987,7 +9002,7 @@ Description
 downloader.ytdl.deprecations
 ----------------------------
 Type
-    ´´bool´´
+    ``bool``
 Default
     ``false``
 Description

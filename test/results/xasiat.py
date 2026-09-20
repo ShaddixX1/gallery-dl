@@ -149,6 +149,7 @@ __tests__ = (
     "duration"      : 4479,
     "extension"     : "mp4",
     "filename"      : "118556_source",
+    "format"        : "Best Quality",
     "height"        : 2160,
     "likes"         : range(1, 10),
     "model"         : [],
@@ -165,6 +166,18 @@ __tests__ = (
         "Tiny Body",
         "Bonus",
     ],
+},
+
+{
+    "#url"     : "https://www.xasiat.com/videos/95985/4745571-you-ll-love-it-no-pyjpqos-s-nakadashi-idol-faced-beauty-has-a-cute-voice-i-was-very-happy-with-her-shy-personality-or-shyness-bonus/",
+    "#comment" : "'format' option",
+    "#class"   : xasiat.XasiatVideoExtractor,
+    "#options" : {"format": "sd"},
+    "#pattern" : r"https://www.xasiat.com/get_file/17/64f4856d4bbc9b9d1d8f34e44bba71ab/95000/95985/95985.mp4/\?v-acctoken=\w+",
+
+    "date"          : "dt:2025-08-26 08:10:05",
+    "duration"      : 2203,
+    "format"        : "SD",
 },
 
 )

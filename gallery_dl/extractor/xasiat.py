@@ -125,7 +125,13 @@ class XasiatVideoExtractor(XasiatExtractor):
         }
 
         info = extr('class="info-content"', "</div>")
-        url = extr("video_alt_url: '", "'")
+
+        if self.config("format") in {"SD", "sd", "480p"}:
+            url = extr("video_url: '", "'")
+            data["format"] = "SD"
+        else:
+            url = extr("video_alt_url: '", "'")
+            data["format"] = "Best Quality"
 
         data["model"] = text.re(
             r'top_models1"></i>\s*(.+)\s*</span').findall(info)
