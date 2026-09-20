@@ -2068,7 +2068,8 @@ Consider all listed sites to potentially be NSFW.
         <span title="https://www.xasiat.com/albums/categories/CATEGORY/">Categories</span> |
         <span title="https://www.xasiat.com/albums/models/MODEL/">Models</span> |
         <span title="https://www.xasiat.com/search/QUERY/">Search Results</span> |
-        <span title="https://www.xasiat.com/albums/tags/TAG/">Tag Searches</span></td>
+        <span title="https://www.xasiat.com/albums/tags/TAG/">Tag Searches</span> |
+        <span title="https://www.xasiat.com/videos/12345/TITLE/">Videos</span></td>
     <td></td>
 </tr>
 <tr id="xfolio" title="xfolio">

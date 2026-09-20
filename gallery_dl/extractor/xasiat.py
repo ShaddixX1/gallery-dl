@@ -16,8 +16,6 @@ ALBUM_PATTERN = BASE_PATTERN + r"/albums"
 
 class XasiatExtractor(Extractor):
     category = "xasiat"
-    directory_fmt = ("{category}", "{title}")
-    archive_fmt = "{album_url}_{num}"
     root = "https://www.xasiat.com"
 
     def items(self):
@@ -53,6 +51,8 @@ class XasiatExtractor(Extractor):
 
 class XasiatAlbumExtractor(XasiatExtractor):
     subcategory = "album"
+    directory_fmt = ("{category}", "{title}")
+    archive_fmt = "{album_url}_{num}"
     pattern = ALBUM_PATTERN + r"/(\d+)/[^/?#]+)"
     example = "https://www.xasiat.com/albums/12345/TITLE/"
 
@@ -84,6 +84,58 @@ class XasiatAlbumExtractor(XasiatExtractor):
         for data["num"], url in enumerate(urls, 1):
             text.nameext_from_name(url.rsplit("/", 2)[1], data)
             yield Message.Url, url, data
+
+
+class XasiatVideoExtractor(XasiatExtractor):
+    subcategory = "video"
+    directory_fmt = ("{category}",)
+    filename_fmt = "{video_id} {title}.{extension}"
+    archive_fmt = "{video_url}"
+    pattern = BASE_PATTERN + r"/videos/(\d+)/[^/?#]+)"
+    example = "https://www.xasiat.com/videos/12345/TITLE/"
+
+    def items(self):
+        path, video_id = self.groups
+        url = f"{self.root}{path}/"
+        response = self.request(url)
+        extr = text.extract_from(response.text)
+
+        data = {
+            "title": text.unescape(extr(
+                'property="og:title" content="', '"')),
+            "thumbnail": text.unescape(extr(
+                'property="og:image" content="', '"')),
+            "date": self.parse_datetime_iso(extr(
+                'property="video:release_date" content="', '"')),
+            "duration": text.parse_int(extr(
+                'property="video:duration" content="', '"')),
+            "views": text.parse_int(extr(
+                '"userInteractionCount": "', '"')),
+            "likes": text.parse_int(extr(
+                '"userInteractionCount": "', '"')),
+            "width": text.parse_int(extr(
+                'property="og:video:width" content="', '"')),
+            "height": text.parse_int(extr(
+                'property="og:video:height" content="', '"')),
+            "tags": extr('property="video:tag" content="', '"').split(", "),
+            "video_url": response.url,
+            "video_id": text.parse_int(video_id),
+            "count": 1,
+            "type": "video",
+        }
+
+        info = extr('class="info-content"', "</div>")
+        url = extr("video_alt_url: '", "'")
+
+        data["model"] = text.re(
+            r'top_models1"></i>\s*(.+)\s*</span').findall(info)
+        categories = text.re(
+            r'categories/[^"]+\">\s*(.+)\s*</a').findall(info)
+        data["video_category"] = categories[0] if categories else ""
+
+        yield Message.Directory, "", data
+        text.nameext_from_name(url.rsplit("/", 2)[1], data)
+        yield Message.Url, url, data
 
 
 class XasiatTagExtractor(XasiatExtractor):
