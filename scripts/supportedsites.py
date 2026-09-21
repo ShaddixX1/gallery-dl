@@ -223,6 +223,7 @@ CATEGORY_MAP = {
     "socialmediagirlsforum": "Social Media Girls Forums",
     "sofurry"        : "SoFurry",
     "speakerdeck"    : "Speaker Deck",
+    "steamcommunity" : "Steam Community",
     "steamgriddb"    : "SteamGridDB",
     "subscribestar"  : "SubscribeStar",
     "tbib"           : "The Big ImageBoard",
