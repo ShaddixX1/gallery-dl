@@ -1747,6 +1747,12 @@ Consider all listed sites to potentially be NSFW.
     <td><span title="https://speakerdeck.com/USER/PRESENTATION">Presentations</span></td>
     <td></td>
 </tr>
+<tr id="steamcommunity" title="steamcommunity">
+    <td>Steam Community</td>
+    <td>https://steamcommunity.com/</td>
+    <td><span title="https://steamcommunity.com/sharedfiles/filedetails/?id=12345">Sharedfiles</span></td>
+    <td></td>
+</tr>
 <tr id="steamgriddb" title="steamgriddb">
     <td>SteamGridDB</td>
     <td>https://www.steamgriddb.com</td>
