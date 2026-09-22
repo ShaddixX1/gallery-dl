@@ -380,14 +380,14 @@ __tests__ = (
     "#class"   : pawchive.PawchivePostExtractor,
     "#results" : "https://file.pawchive.pw/data/8f/78/8f781dc6e3cf5b643e5802d48d43404dcbcde51703845bd4563b11269f87f609.zip",
 
-    "date"    : "dt:2026-07-29 01:36:00",
-    "deferred": True,
-    "id"      : "165125279",
-    "original": True,
-    "title"   : "Furina | Genshin Impact | 271p",
-    "type"    : "archive",
-    "user"    : "172320970",
-    "username": "Stormia",
+    "date"     : "dt:2026-07-29 01:36:00",
+    "!deferred": False,
+    "id"       : "165125279",
+    "original" : True,
+    "title"    : "Furina | Genshin Impact | 271p",
+    "type"     : "archive",
+    "user"     : "172320970",
+    "username" : "Stormia",
 },
 
 {

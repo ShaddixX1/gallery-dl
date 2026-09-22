@@ -254,30 +254,29 @@ class PawchiveExtractor(Extractor):
         return (file,)
 
     def _extract_attachments(self, post):
-        for attachment in post["attachments"]:
-            attachment["type"] = "attachment"
-            if "deferred" in attachment and attachment["deferred"]:
-                post["deferred"] = True
-                if self.deferred:
-                    self._extract_deferred(post, attachment)
+        for att in post["attachments"]:
+            att["type"] = "attachment"
+            if "deferred" in att and att["deferred"]:
+                if not self.deferred:
+                    if att.get("temp_url"):
+                        post["deferred"] = True
+                elif url := att.get("temp_url"):
+                    post["deferred"] = True
+                    if text.ext_from_url(url) == "m3u8":
+                        att["path"] = "ytdl:" + url
+                        att["_ytdl_manifest"] = "hls"
+                        att["_ytdl_manifest_headers"] = post["_http_headers"]
+                    else:
+                        att["path"] = url
+                else:
+                    att["deferred"] = False
+                    self.log.debug("%s: Missing 'deferred' file link (%s)",
+                                   post["id"], att["name"])
         return post["attachments"]
 
     def _extract_inline(self, post):
         for path in self._find_inline(post.get("content") or ""):
             yield {"path": path, "name": path, "type": "inline"}
-
-    def _extract_deferred(self, post, att):
-        if url := att.get("temp_url"):
-            if text.ext_from_url(url) == "m3u8":
-                att["path"] = "ytdl:" + url
-                att["_ytdl_manifest"] = "hls"
-                att["_ytdl_manifest_headers"] = post["_http_headers"]
-            else:
-                att["path"] = url
-        else:
-            att["deferred"] = False
-            self.log.debug("%s: Missing 'deferred' file link (%s)",
-                           post["id"], att["name"])
 
     def _build_file_generators(self, filetypes):
         if filetypes is None:
