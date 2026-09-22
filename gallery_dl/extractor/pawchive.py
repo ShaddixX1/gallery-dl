@@ -101,7 +101,10 @@ class PawchiveExtractor(Extractor):
             service = post["service"]
             creator_id = post["user"]
 
-            if not post.get("has_full", True):
+            if post.get("has_full", True):
+                warning = True
+            else:
+                warning = False
                 self.log.warning("%s: Incomplete/Missing file import ('%s')",
                                  post["id"], post.get("preview_state"))
 
@@ -136,7 +139,6 @@ class PawchiveExtractor(Extractor):
 
             files = []
             hashes = set()
-            warning = True
             post_archives = post["archives"] = archives_type()
 
             for file in itertools.chain.from_iterable(
@@ -265,26 +267,17 @@ class PawchiveExtractor(Extractor):
             yield {"path": path, "name": path, "type": "inline"}
 
     def _extract_deferred(self, post, att):
-        if not (html := post.get("_html")):
-            url = (f"{self.root}/{post['service']}/user/{post['user']}/"
-                   f"post/{post['id']}")
-            html = post["_html"] = self.request(url).text
-        name = text.escape(att["name"])
-        if (pos := html.find("<summary>" + name)) >= 0 and \
-                (source := text.extract(html, "<source", ">", pos)[0]):
-            src = text.unescape(text.extr(source, 'src="', '"'))
-            if text.ext_from_url(src) == "m3u8":
-                att["path"] = "ytdl:" + src
+        if url := att.get("temp_url"):
+            if text.ext_from_url(url) == "m3u8":
+                att["path"] = "ytdl:" + url
                 att["_ytdl_manifest"] = "hls"
                 att["_ytdl_manifest_headers"] = post["_http_headers"]
             else:
-                att["path"] = src
-        elif (pos := html.find(f">Download {name}<")) >= 0 and \
-                (href := text.rextr(html, 'href="', '"', pos)):
-            att["path"] = text.unescape(href)
+                att["path"] = url
         else:
-            self.log.warning("Failed to extract 'deferred' file (%s)",
-                             att["name"])
+            att["deferred"] = False
+            self.log.debug("%s: Missing 'deferred' file link (%s)",
+                           post["id"], att["name"])
 
     def _build_file_generators(self, filetypes):
         if filetypes is None:

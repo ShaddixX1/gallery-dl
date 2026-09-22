@@ -352,6 +352,45 @@ __tests__ = (
 },
 
 {
+    "#url"     : "https://pawchive.pw/patreon/user/11321390/post/165465384",
+    "#comment" : "multiple 'deferred' files",
+    "#category": ("", "pawchive", "patreon"),
+    "#class"   : pawchive.PawchivePostExtractor,
+    "#options" : {"deferred": "only"},
+    "#pattern" : (
+        r"https://t1.pawchive.pw/f/e6eefe470d00a0e8/20260828%20%E3%83%9C%E3%82%A2%E3%83%BB%E3%83%8F%E3%83%B3%E3%82%B3%E3%83%83%E3%82%AF%20Boa%20Hancock.pdf\?e=\d+&s=\w+",
+        r"https://t1.pawchive.pw/f/e88c0f20eac9742d/20260829%20%E3%83%8B%E3%82%B3%E3%83%BB%E3%83%AD%E3%83%93%E3%83%B3%20Nico%20Robin.pdf\?e=\d+&s=\w+",
+        r"https://t1.pawchive.pw/f/e547d1e57c4e2c56/20260831%20%E3%83%A2%E3%83%8D%20Monet.pdf\?e=\d+&s=\w+",
+        r"https://t1.pawchive.pw/f/8dbdc510a6a76fd2/202608.zip\?e=\d+&s=\w+",
+        r"https://t1.pawchive.pw/f/5a5852d56ad28e2e/%EF%BC%92.png\?e=\d+&s=\w+",
+        r"https://t1.pawchive.pw/f/b34959c566f1bd30/%EF%BC%93.png\?e=\d+&s=\w+",
+    ),
+
+    "deferred": True,
+    "id"      : "165465384",
+    "title"   : "フルバージョンまとめ 2026/08/01 - 2026/08/31 【739枚】",
+    "user"    : "11321390",
+    "username": "AI Chaya",
+},
+
+{
+    "#url"     : "https://pawchive.pw/patreon/user/172320970/post/165125279",
+    "#comment" : "'deferred' files without download URL (gh#9768)",
+    "#category": ("", "pawchive", "patreon"),
+    "#class"   : pawchive.PawchivePostExtractor,
+    "#results" : "https://file.pawchive.pw/data/8f/78/8f781dc6e3cf5b643e5802d48d43404dcbcde51703845bd4563b11269f87f609.zip",
+
+    "date"    : "dt:2026-07-29 01:36:00",
+    "deferred": True,
+    "id"      : "165125279",
+    "original": True,
+    "title"   : "Furina | Genshin Impact | 271p",
+    "type"    : "archive",
+    "user"    : "172320970",
+    "username": "Stormia",
+},
+
+{
     "#url"     : "https://pawchive.st/patreon/user/3295915",
     "#category": ("", "pawchive", "patreon"),
     "#class"   : pawchive.PawchiveUserExtractor,
