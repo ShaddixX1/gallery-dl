@@ -127,7 +127,7 @@ class InstagramExtractor(Extractor):
                             url = f"ytdl:{post['post_url']}{file['num']}.m4a"
                         yield Message.Url, url, file
                     if previews_audio and file.get("display_url"):
-                        file["media_id"] += "p"
+                        file["media_id"] = f"{file['media_id']}p"
                     else:
                         continue
                 elif url := file.get("video_url"):
@@ -140,7 +140,7 @@ class InstagramExtractor(Extractor):
                             url = f"ytdl:{post['post_url']}{file['num']}.mp4"
                         yield Message.Url, url, file
                     if previews_video:
-                        file["media_id"] += "p"
+                        file["media_id"] = f"{file['media_id']}p"
                     else:
                         continue
 
