@@ -987,10 +987,15 @@ class InstagramAPI():
                 "Priority": "u=0, i",
             }
             page = self.extractor.request(url, headers=headers).text
-            if uid := text.extr(page, '"profile_id":"', '"'):
-                return {"id": uid}
+            user = {}
+            if user_id := text.extr(page, '"profile_id":"', '"'):
+                user["id"] = user_id
+            if username := text.extr(page, '"username":"', '"'):
+                user["username"] = username
         except Exception:
             pass
+        if user:
+            return user
         raise self.exc.NotFoundError("user")
 
     def user_by_screen_name(self, screen_name):
