@@ -11,7 +11,7 @@ __tests__ = (
 {
     "#url"     : "https://www.eporner.com/gallery/mHNhErACQFE/NaughtyAmerica-Lolly-Dames-My-Wife-s-Hot-Friend-Big-Booty-Big-Tits-Lolly-Dames-Gets-Her-Pussy-Slammed-Hard/",
     "#class"   : eporner.EpornerGalleryExtractor,
-    "#pattern" : r"https://static\-eu\-cdn\.eporner\.com/gallery/FE/CQ/mHNhErACQFE/\d+\-image\-\d+\.jpg",
+    "#pattern" : r"https://static\-\w+\-cdn\.eporner\.com/gallery/FE/CQ/mHNhErACQFE/\d+\-image\-\d+\.jpg",
     "#count"   : 261,
 
     "count"      : 261,
@@ -30,6 +30,7 @@ __tests__ = (
         "mature",
         "housewives",
         "big tits",
+        "pov porn",
         "blonde",
         "big ass",
         "milf",
