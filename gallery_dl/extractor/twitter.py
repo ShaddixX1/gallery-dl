@@ -2381,6 +2381,9 @@ class TwitterAPI():
                 if "quoted_status_result" in tweet:
                     try:
                         quoted = tweet["quoted_status_result"]["result"]
+                        if "tweet" in quoted:
+                            #  limitedActionResults
+                            quoted = quoted["tweet"]
                         quoted["legacy"]["quoted_by"] = (
                             tweet["core"]["user_results"]["result"]
                             ["core"]["screen_name"])
