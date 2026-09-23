@@ -790,12 +790,7 @@ class InstagramInfoExtractor(InstagramExtractor):
     example = "https://www.instagram.com/USER/info/"
 
     def items(self):
-        screen_name = self.item
-        if screen_name.startswith("id:"):
-            user = self.api.user_by_id(screen_name[3:])
-        else:
-            user = self.api.user_by_screen_name(screen_name)
-
+        user = self.api.user(self.item, check_private=False)
         return iter(((Message.Directory, "", user.copy()),))
 
 
