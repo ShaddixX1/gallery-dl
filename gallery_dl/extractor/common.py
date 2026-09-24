@@ -752,7 +752,7 @@ class Extractor():
         try:
             with open(path_tmp, "w", encoding="utf-8") as fp:
                 util.cookiestxt_store(fp, self.cookies)
-            if os.path.islink(path):
+            if util.SYMLINKS and os.path.islink(path):
                 path = os.path.realpath(path)
             os.replace(path_tmp, path)
         except OSError as exc:

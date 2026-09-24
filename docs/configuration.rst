@@ -11001,6 +11001,24 @@ Description
     Additional input files.
 
 
+follow-symlinks
+---------------
+Type
+    ``bool``
+Default
+    ``false``
+Description
+    When updating the contents of
+
+    * ``--cookies``
+    * ``--input-file-comment``
+    * ``--input-file-delete``
+
+    files, follow symlinks and update their targets.
+
+    Otherwise, symlinks are replaced with regular files.
+
+
 signals-ignore
 --------------
 Type
