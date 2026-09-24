@@ -672,6 +672,8 @@ class InputManager():
         try:
             with open(path_tmp, "w", encoding="utf-8") as fp:
                 fp.writelines(lines)
+            if os.path.islink(path):
+                path = os.path.realpath(path)
             os.replace(path_tmp, path)
         except Exception as exc:
             self.log.warning(
