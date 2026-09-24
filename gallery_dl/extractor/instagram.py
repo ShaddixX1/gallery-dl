@@ -704,7 +704,7 @@ class InstagramStoriesExtractor(InstagramExtractor):
 
     def posts(self):
         reel_id = self.highlight_id or self.api.user(self.user)["id"]
-        reels = self.api.reels_media((reel_id,))
+        reels = list(self.api.reels_media((reel_id,)))
 
         if not reels:
             return ()
