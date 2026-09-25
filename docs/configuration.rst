@@ -10297,7 +10297,8 @@ Type
 Default
     ``"file"``
 Description
-    The event(s) for which `python.function`_ gets called.
+    The event(s) for which `python.function`_ is called
+    or `python.expression`_ is evaluated.
 
     See `metadata.event`_ for a list of available events.
 
@@ -10331,6 +10332,34 @@ Description
       ``<function name>`` is the name of the function in that module.
 
     It gets called with the current metadata dict as argument.
+
+
+python.args
+-----------
+Type
+    ``list`` of `Format Strings`_
+Example
+    ``["{username!c}", "\fE width*height", "\fF {site//(1024*1024)}MB"]``
+Description
+    List of additional positional arguments
+    that get passed to `python.function`_.
+
+
+python.kwargs
+-------------
+Type
+    ``object`` (`name` → `Format String`_)
+Example
+    .. code:: json
+
+        {
+            "user"  : "{username!c}",
+            "pixels": "\fE width*height",
+            "size"  : "\fF {size//(1024*1024)}MB"]`
+        }
+Description
+    Mapping of additional keyword arguments
+    that get passed to `python.function`_.
 
 
 python.mode
