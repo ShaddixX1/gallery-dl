@@ -627,7 +627,6 @@ class InstagramTaggedExtractor(InstagramExtractor):
 
     def metadata(self):
         user = self.api.user(self.item)
-        self.user_id = user["id"]
         return {
             "tagged_owner_id" : user["id"],
             "tagged_username" : user["username"],
@@ -635,7 +634,7 @@ class InstagramTaggedExtractor(InstagramExtractor):
         }
 
     def posts(self):
-        return self.api.user_tagged(self.user_id)
+        return self.api.user_tagged(self.item)
 
 
 class InstagramSavedExtractor(InstagramExtractor):
@@ -1124,7 +1123,25 @@ class InstagramAPI():
         params = {"count": 50}
         return self._pagination(endpoint, params, media=True)
 
-    def user_tagged(self, user_id):
+    def user_tagged(self, handle):
+        variables = {
+            "after"  : None,
+            "before" : None,
+            "count"  : 12,
+            "first"  : 12,
+            "last"   : None,
+            "user_id": str(self.user(handle)["id"]),
+            "__relay_internal__pv__"
+            "PolarisShortDramaEnabledrelayprovider": True,
+        }
+
+        return self._pagination_graphql(
+            "PolarisProfileTaggedTabContentQuery_connection",
+            "xdt_api__v1__usertags__user_id__feed_connection",
+            "28412176455057653",
+            variables)
+
+    def user_tagged_legacy(self, user_id):
         endpoint = f"/v1/usertags/{user_id}/feed/"
         params = {"count": 20}
         return self._pagination(endpoint, params)
@@ -1152,7 +1169,7 @@ class InstagramAPI():
         extr.log.debug("Found 'lsd=%s' & 'fb_dtsg=%s'", lsd, dtsg)
         return lsd, dtsg
 
-    def _extract_docid(self, page, opname):
+    def _extract_docid(self, path, opname):
         extr = self.extractor
         if doc_id := extr.config("doc-id"):
             extr.log.debug("Using 'config' doc_id value")
@@ -1162,7 +1179,7 @@ class InstagramAPI():
         needle = opname + "_instagramRelayOperation"
         doc_id = ""
         for path in util.unique(text.extract_iter(
-                extr.cache(self._webpage, page),
+                extr.cache(self._webpage, path),
                 'href="https://static.cdninstagram.com/rsrc.php/', '"')):
             if not path.endswith(".js"):
                 continue
