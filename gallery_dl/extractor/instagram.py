@@ -877,6 +877,7 @@ class InstagramAPI():
         return self._pagination_graphql(
             "PolarisProfileStoryHighlightsTrayContentQuery",
             "highlights",
+            "",
             "26970053832668570",
             variables)
 
@@ -903,6 +904,7 @@ class InstagramAPI():
         return self._pagination_graphql(
             "PolarisStoriesV3HighlightsPageQuery",
             "xdt_api__v1__feed__reels_media__connection",
+            "",
             "28325328583775973",
             variables)
 
@@ -1082,6 +1084,7 @@ class InstagramAPI():
         return self._pagination_graphql(
             "PolarisProfilePostsTabContentQuery_connection",
             "xdt_api__v1__feed__user_timeline_graphql_connection",
+            "",
             "27648175911528613",
             variables)
 
@@ -1105,6 +1108,7 @@ class InstagramAPI():
         return self._pagination_graphql(
             "PolarisProfileReelsTabContentQuery",
             "fetch__XDTUserDict",
+            "reels",
             "28170354102656082",
             variables)
 
@@ -1138,6 +1142,7 @@ class InstagramAPI():
         return self._pagination_graphql(
             "PolarisProfileTaggedTabContentQuery_connection",
             "xdt_api__v1__usertags__user_id__feed_connection",
+            "tagged",
             "28412176455057653",
             variables)
 
@@ -1279,12 +1284,16 @@ class InstagramAPI():
                 return extr._update_cursor(None)
             params["max_id"] = extr._update_cursor(next_max_id)
 
-    def _pagination_graphql(self, opname, fieldname, doc_id, variables):
+    def _pagination_graphql(self, opname, fieldname, path, doc_id, variables):
         extr = self.extractor
         root = extr.root
         url = root + "/graphql/query"
 
-        path = ("/" + extr._user["username"]) if extr._user else ""
+        if path is None:
+            path = ""
+        elif name := extr._user["username"]:
+            path = f"/{name}/{path}"
+
         fb_lsd, fb_dtsg = self._extract_fb_tokens(path)
         doc_id = extr.cache(self._extract_docid, path, opname,
                             _key=1, _exp=86400, _mem=False) or doc_id
