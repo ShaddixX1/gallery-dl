@@ -1289,10 +1289,9 @@ class InstagramAPI():
         root = extr.root
         url = root + "/graphql/query"
 
-        if path is None:
-            path = ""
-        elif name := extr._user["username"]:
-            path = f"/{name}/{path}"
+        if extr._user:
+            name = extr._user["username"]
+            path = f"/{name}/{path}" if path else ("/" + name)
 
         fb_lsd, fb_dtsg = self._extract_fb_tokens(path)
         doc_id = extr.cache(self._extract_docid, path, opname,
