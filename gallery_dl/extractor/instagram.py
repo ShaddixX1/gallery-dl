@@ -630,11 +630,12 @@ class InstagramTaggedExtractor(InstagramExtractor):
         return {
             "tagged_owner_id" : user["id"],
             "tagged_username" : user["username"],
-            "tagged_full_name": user["full_name"],
+            "tagged_full_name": user.get("full_name"),
         }
 
     def posts(self):
-        return self.api.user_tagged(self.item)
+        for post in self.api.user_tagged(self.item):
+            yield from self.api.media(post["code"])
 
 
 class InstagramSavedExtractor(InstagramExtractor):
@@ -1085,7 +1086,7 @@ class InstagramAPI():
             "PolarisProfilePostsTabContentQuery_connection",
             "xdt_api__v1__feed__user_timeline_graphql_connection",
             "",
-            "27648175911528613",
+            "28975909992013618",
             variables)
 
     def user_reels(self, handle):
@@ -1106,10 +1107,10 @@ class InstagramAPI():
         }
 
         return self._pagination_graphql(
-            "PolarisProfileReelsTabContentQuery",
+            "PolarisProfileReelsTabContentQuery_connection",
             "fetch__XDTUserDict",
             "reels",
-            "28170354102656082",
+            "28647575511547745",
             variables)
 
     def user_followers(self, user_id):
@@ -1215,10 +1216,10 @@ class InstagramAPI():
             "Accept"          : "*/*",
             "X-CSRFToken"     : extr.csrf_token,
             "X-IG-App-ID"     : "936619743392459",
-            "X-ASBD-ID"       : "129477",
+            "X-ASBD-ID"       : "359341",
             "X-IG-WWW-Claim"  : extr.www_claim,
+            "X-IG-Max-Touch-Points": "0",
             "X-Requested-With": "XMLHttpRequest",
-            "Connection"      : "keep-alive",
         }
         return extr.request_json(url, **kwargs)
 
