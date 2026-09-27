@@ -4149,6 +4149,18 @@ Description
         Do not download audio files
 
 
+extractor.instagram.covers
+--------------------------
+Type
+    ``bool``
+Default
+    ``false``
+Description
+    Download ``highlight`` cover images.
+Note
+    This option only affects ``highlights``.
+
+
 extractor.instagram.cursor
 --------------------------
 Type
