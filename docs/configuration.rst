@@ -6126,6 +6126,25 @@ Description
     Process replurked posts in addition to original posts.
 
 
+extractor.pornhub.include
+-------------------------
+Type
+    * ``string``
+    * ``list`` of ``strings``
+Default
+    * ``["photos"]``
+Description
+    A (comma-separated) list of subcategories to include
+    when processing a user profile.
+Supported Values
+    * ``avatar``
+    * ``background``
+    * ``photos``
+    * ``gifs``
+Note
+    It is possible to use ``"all"`` instead of listing all values separately.
+
+
 extractor.[postmill].save-link-post-body
 ----------------------------------------
 Type
@@ -6147,8 +6166,6 @@ Description
 
     Use ``true`` to download animated images as gifs and ``false``
     to download as mp4 videos.
-
-
 
 
 extractor.reddit.api

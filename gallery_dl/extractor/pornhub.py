@@ -163,8 +163,10 @@ class PornhubUserExtractor(Dispatch, PornhubExtractor):
     def items(self):
         base = f"{self.root}/{self.groups[0]}/"
         return self._dispatch_extractors({
-            (PornhubPhotosExtractor, base + "photos"),
-            (PornhubGifsExtractor  , base + "gifs"),
+            "avatar"    : (PornhubAssetExtractor , base + "avatar"),
+            "background": (PornhubAssetExtractor , base + "background"),
+            "photos"    : (PornhubPhotosExtractor, base + "photos"),
+            "gifs"      : (PornhubGifsExtractor  , base + "gifs"),
         }, ("photos",))
 
 
@@ -200,3 +202,42 @@ class PornhubGifsExtractor(PornhubExtractor):
                 yield Message.Queue, base + gid, data
             if gid is None:
                 return
+
+
+class PornhubAssetExtractor(PornhubExtractor):
+    """Extractor for a pornhub user's avatar & banner"""
+    subcategory = "asset"
+    directory_fmt = ("{category}", "{user}")
+    filename_fmt = "{type} {id}.{extension}"
+    archive_fmt = "{user}/{type}/{id}"
+    pattern = USER_PATTERN + r"/(?:avatar|ba(nner|ckground))"
+    example = "https://www.pornhub.com/model/USER/avatar"
+
+    def __init__(self, match):
+        self.subcategory = "background" if match[2] else "avatar"
+        PornhubExtractor.__init__(self, match)
+
+    def items(self):
+        url = f"{self.root}/{self.groups[0]}"
+        page = self.request(url).text
+
+        if self.groups[1]:
+            offset = 5
+            needle = "coverPictureDefault"
+        else:
+            offset = 6
+            needle = "getAvatar"
+
+        if src := text.extr(page, f'id="{needle}" src="', '"'):
+            src = text.unescape(src)
+            if src.count("/") >= 8:
+                id = src.rsplit("/", 2)[1][offset:]
+            else:
+                id = src[src.rfind(")")+1:src.rfind(".")]
+            data = text.nameext_from_url(src, {
+                "id"  : id,
+                "type": self.subcategory,
+                "user": text.extr(page, "<h1", "<").partition(">")[2].strip(),
+            })
+            yield Message.Directory, "", data
+            yield Message.Url, src, data

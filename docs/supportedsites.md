@@ -1479,8 +1479,10 @@ Consider all listed sites to potentially be NSFW.
 <tr id="pornhub" title="pornhub">
     <td>Pornhub</td>
     <td>https://www.pornhub.com/</td>
-    <td><span title="https://www.pornhub.com/album/12345">Galleries</span> |
-        <span title="https://www.pornhub.com/gif/12345">Gifs</span> |
+    <td><span title="https://www.pornhub.com/model/USER/avatar">Avatars | Banners</span> |
+        <span title="https://www.pornhub.com/album/12345">Galleries</span> |
+        <span title="https://www.pornhub.com/gif/12345">GIFs</span> |
+        <span title="https://www.pornhub.com/model/USER/gifs">User GIFs</span> |
         <span title="https://www.pornhub.com/model/USER/photos">Photos</span> |
         <span title="https://www.pornhub.com/model/USER">User Profiles</span></td>
     <td></td>

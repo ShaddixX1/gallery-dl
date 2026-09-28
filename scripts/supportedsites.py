@@ -461,7 +461,9 @@ SUBCATEGORY_MAP = {
         "post": "Posts Images",
     },
     "pornhub": {
-        "gifs": "",
+        "asset": ("Avatars", "Banners"),
+        "gif"  : "GIFs",
+        "gifs" : "User GIFs",
     },
     "raddle": {
         "usersubmissions": "User Profiles",
