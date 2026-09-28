@@ -8598,6 +8598,17 @@ Description
     `youtube-dl's docstrings <https://github.com/ytdl-org/youtube-dl/blob/0153b387e57e0bb8e580f1869f85596d2767fb0d/youtube_dl/YoutubeDL.py#L157>`__
 
 
+extractor.ytdl.websites
+-----------------------
+Type
+    ``list`` of ``strings``
+Example
+    ``["youtube", "bitchute", "nebula"]``
+Description
+    When `enabled <extractor.ytdl.enabled_>`__,
+    only allow usage without `ytdl:` URL prefix for the specified websites.
+
+
 extractor.zerochan.extensions
 -----------------------------
 Type
