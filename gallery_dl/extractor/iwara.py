@@ -445,7 +445,7 @@ class IwaraAPI():
             }
             data = self.extractor.request_json(
                 url, method="POST", headers=self.headers, json=json,
-                fatal=False)
+                expected=(400,))
 
             if not (refresh_token := data.get("token")):
                 self.extractor.log.debug(data)
