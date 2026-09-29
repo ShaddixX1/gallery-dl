@@ -112,7 +112,13 @@ BASE_PATTERN = MastodonExtractor.update({
         "pattern"      : r"baraag\.net",
         "client-id"    : "czxx2qilLElYHQ_sm-lO8yXuGwOHxLX9RYYaD0-nq1o",
         "client-secret": "haMaFdMBgK_-BIxufakmI2gFgkYjqmgXGEO2tB-R2xY",
-    }
+    },
+    "aethy": {
+        "root"         : "https://aethy.com",
+        "pattern"      : r"aethy\.com",
+        "client-id"    : "7usJCzmRTVm37KGDkyJhhmvx-iJrv4oShZLdE_5udHs",
+        "client-secret": "f29ef4f54vKFt0BxSceL7DEoE3xu-yQGUQ9RXE4DJ4g",
+    },
 }) + "(?:/web)?"
 
 

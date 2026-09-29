@@ -3268,6 +3268,18 @@ Consider all listed sites to potentially be NSFW.
         <span title="https://baraag.net/@USER">User Profiles</span></td>
     <td><a href="https://codeberg.org/mikf/gallery-dl#oauth">OAuth</a></td>
 </tr>
+<tr id="aethy" title="aethy">
+    <td>Aethy</td>
+    <td>https://aethy.com/</td>
+    <td><span title="https://aethy.com/bookmarks">Bookmarks</span> |
+        <span title="https://aethy.com/favourites">Favorites</span> |
+        <span title="https://aethy.com/@USER/following">Followed Users</span> |
+        <span title="https://aethy.com/tags/NAME">Hashtags</span> |
+        <span title="https://aethy.com/lists/12345">Lists</span> |
+        <span title="https://aethy.com/@USER/12345">Images from Statuses</span> |
+        <span title="https://aethy.com/@USER">User Profiles</span></td>
+    <td></td>
+</tr>
 
 <tr id="shopify" title="shopify">
     <td colspan="4"><strong>Shopify Instances</strong></td>
