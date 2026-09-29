@@ -93,6 +93,12 @@ BASE_PATTERN = MastodonExtractor.update({
         "client-id"    : "dBSHdpsnOUZgxOnjKSQrWEPakO3ctM7HmsyoOd4FcRo",
         "client-secret": "DdrODTHs_XoeOsNVXnILTMabtdpWrWOAtrmw91wU1zI",
     },
+    "mastodon.art": {
+        "root"         : "https://mastodon.art",
+        "pattern"      : r"mastodon\.art",
+        "client-id"    : "pLZ57rlS2GRaDCZBcl7dWAYUuPtqXPU3pXIZO2FPcNQ",
+        "client-secret": "m1bANc_yx1nxpU7amu_AkyzQepbuJ3aiUAxoepussb4",
+    },
     "pawoo": {
         "root"         : "https://pawoo.net",
         "pattern"      : r"pawoo\.net",

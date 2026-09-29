@@ -3232,6 +3232,18 @@ Consider all listed sites to potentially be NSFW.
         <span title="https://mastodon.social/@USER">User Profiles</span></td>
     <td><a href="https://codeberg.org/mikf/gallery-dl#oauth">OAuth</a></td>
 </tr>
+<tr id="mastodon.art" title="mastodon.art">
+    <td>Mastodon.art</td>
+    <td>https://mastodon.art/</td>
+    <td><span title="https://mastodon.art/bookmarks">Bookmarks</span> |
+        <span title="https://mastodon.art/favourites">Favorites</span> |
+        <span title="https://mastodon.art/@USER/following">Followed Users</span> |
+        <span title="https://mastodon.art/tags/NAME">Hashtags</span> |
+        <span title="https://mastodon.art/lists/12345">Lists</span> |
+        <span title="https://mastodon.art/@USER/12345">Images from Statuses</span> |
+        <span title="https://mastodon.art/@USER">User Profiles</span></td>
+    <td></td>
+</tr>
 <tr id="pawoo" title="pawoo">
     <td>Pawoo</td>
     <td>https://pawoo.net/</td>
