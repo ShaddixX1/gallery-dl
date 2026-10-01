@@ -46,21 +46,50 @@ class DcinsideGalleryExtractor(GalleryExtractor):
         }
 
     def images(self, page):
+        base = "https://image.dcinside.com/viewimage.php?no="
+
+        if abox := text.extr(page, 'class="appending_file_box', "</div>"):
+            results = []
+            for li in text.extract_iter(abox, "<li", "</li>"):
+                url = text.unescape(text.extr(li, 'href="', '"'))
+                data = text.parse_query(url[url.find("?")+1:])
+                if name := data.pop("f_no", None):
+                    text.nameext_from_name(name, data)
+                else:
+                    data["extension"] = "jpg"
+                key = data["no"]
+                if img := text.iextr(
+                        page, "/viewimagePop.php?no=" + key, "<img", ">"):
+                    data["fid"] = text.extr(img, '?id=', '&')
+                    data["hash"] = text.extr(img, 'alt="', '"')
+                    data["_fallback"] = (self._extract_image(img),)
+                results.append((base + key, data))
+            return results
+
         if write_div := text.extr(page, 'class="write_div', "</div>"):
             results = []
             for img in text.extract_iter(write_div, "<img", ">"):
-                url = text.unescape(text.extr(img, ' data-original="', '"') or
-                                    text.extr(img, ' src="', '"') or
-                                    text.extr(img, " src='", "'"))
-                results.append((url, {
-                    "hash"     : text.extr(img, ' alt="', '"'),
+                data = {
+                    "fid" : text.extr(img, '?id=', '&'),
+                    "hash": text.extr(img, ' alt="', '"'),
                     "extension": "jpg",
-                }))
+                }
+                if key := text.extr(img, "/viewimagePop.php?no=", "'"):
+                    url = base + key
+                    data["_fallback"] = (self._extract_image(img),)
+                else:
+                    url = self._extract_image(img)
+                results.append((url, data))
             return results
 
         if image := text.extr(page, '"image":{', '}'):
             url = text.extr(image, '"URL":"', '"')
             return ((url, {"extension": "jpg"}),)
+
+    def _extract_image(self, img):
+        return text.unescape(text.extr(img, ' data-original="', '"') or
+                             text.extr(img, ' src="', '"') or
+                             text.extr(img, " src='", "'"))
 
 
 class DcinsideUserExtractor(Extractor):
