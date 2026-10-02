@@ -499,6 +499,9 @@ SUBCATEGORY_MAP = {
         "story": "",
         "spotlight": "",
     },
+    "steamcommunity": {
+        "game": "Game Media",
+    },
     "steamgriddb": {
         "asset": "Individual Assets",
     },

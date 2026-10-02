@@ -667,6 +667,7 @@ Default
         ``sizebooru``       |
         ``sofurry``         |
         ``soundgasm``       |
+        ``steamcommunity``  |
         ``thehentaiworld``  |
         ``urlgalleries``    |
         ``vk``              |
@@ -6726,6 +6727,19 @@ Description
 
     Disabling this option will download files
     via their `display` URL in ``.webp`` format.
+
+
+extractor.steamcommunity.metadata
+---------------------------------
+Type
+    ``bool``
+Default
+    ``false``
+Description
+    Extract additional metadata.
+Note
+    This requires 1 additional HTTP request per item
+    and is likely to result in ``429 Too Many Requests`` errors.
 
 
 extractor.steamgriddb.animated

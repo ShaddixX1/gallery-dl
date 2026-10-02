@@ -1752,7 +1752,8 @@ Consider all listed sites to potentially be NSFW.
 <tr id="steamcommunity" title="steamcommunity">
     <td>Steam Community</td>
     <td>https://steamcommunity.com/</td>
-    <td><span title="https://steamcommunity.com/sharedfiles/filedetails/?id=12345">Sharedfiles</span></td>
+    <td><span title="https://steamcommunity.com/app/12345/screenshots/">Game Media</span> |
+        <span title="https://steamcommunity.com/sharedfiles/filedetails/?id=12345">Sharedfiles</span></td>
     <td></td>
 </tr>
 <tr id="steamgriddb" title="steamgriddb">

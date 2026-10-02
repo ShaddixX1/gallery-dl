@@ -13,7 +13,7 @@ __tests__ = (
     "#class"   : steamcommunity.SteamcommunitySharedfileExtractor,
     "#results" : "https://images.steamusercontent.com/ugc/567770337564660542/8552FC9551546163E36D29B0512097A7084C8B1B/",
 
-    "content_type": "screenshots",
+    "section"     : "screenshots",
     "creator"     : "GiovanH",
     "creator_id"  : "giovanh",
     "date"        : "dt:2014-08-05 09:29:00",
@@ -37,7 +37,7 @@ __tests__ = (
     "#class"   : steamcommunity.SteamcommunitySharedfileExtractor,
     "#results" : "https://images.steamusercontent.com/ugc/1839154007536501034/6478074127CCBB03226274B8035FD607B9DA0673/",
 
-    "content_type": "artwork",
+    "section"     : "artwork",
     "creator"     : "SomewhatTolerable",
     "creator_id"  : "76561199186562768",
     "date"        : "dt:2021-11-28 07:06:00",
@@ -61,11 +61,11 @@ __tests__ = (
     "#class"   : steamcommunity.SteamcommunitySharedfileExtractor,
     "#results" : "https://images.steamusercontent.com/ugc/9795036510357212076/940E21074F339522F872FA09280AC9FB7A6797AC/",
 
-    "content_type": "artwork",
+    "section"     : "artwork",
     "creator"     : "76561198118687531",
     "creator_id"  : "mz007",
     "date"        : "dt:2026-09-15 06:37:00",
-    "description" : """ТУН ТУН САХУР, ПИНГВИНЫ ИЗ МАДАГАСКАРА, Т-34 И Т.Д.\r\nСкопируй в консоль CS2:\r\n[code]connect 45.95.31.104:27315[/code]""",
+    "description" : """ТУН ТУН САХУР, ПИНГВИНЫ ИЗ МАДАГАСКАРА, Т-34 И Т.Д.\nСкопируй в консоль CS2:\n[code]connect 45.95.31.104:27315[/code]""",
     "extension"   : "jpg",
     "file_id"     : "3802119206",
     "game"        : "Counter-Strike 2",
@@ -78,6 +78,34 @@ __tests__ = (
     "ugc_id"      : "9795036510357212076/940E21074F339522F872FA09280AC9FB7A6797AC",
     "url"         : "https://steamcommunity.com/sharedfiles/filedetails/?id=3802119206",
     "views"       : range(3000, 20000),
+},
+
+{
+    "#url"     : "https://steamcommunity.com/app/221910/screenshots/",
+    "#class"   : steamcommunity.SteamcommunityGameExtractor,
+    "#pattern" : r"https://images\.steamusercontent\.com/ugc/.+",
+    "#range"   : "1-25",
+    "#count"   : 25,
+
+    "comments"  : str,
+    "creator"   : str,
+    "creator_id": str,
+    "extension" : "jpg",
+    "file_id"   : str,
+    "game_appid": "221910",
+    "post_url"  : str,
+    "section"   : "Screenshot",
+    "title"     : str,
+    "ugc_id"    : str,
+},
+
+{
+    "#url"     : "https://steamcommunity.com/app/221910/images/",
+    "#class"   : steamcommunity.SteamcommunityGameExtractor,
+    "#pattern" : steamcommunity.SteamcommunitySharedfileExtractor.pattern,
+    "#options" : {"metadata": True},
+    "#range"   : "1-25",
+    "#count"   : 25,
 },
 
 )

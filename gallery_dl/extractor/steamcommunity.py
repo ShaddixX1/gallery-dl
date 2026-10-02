@@ -10,17 +10,26 @@ from ..extractor.common import Extractor, Message
 from .. import text, dt
 
 BASE_PATTERN = r"(?:https?://)?(?:www\.)?steamcommunity.com"
-CONTENT_TYPES = {"screenshots", "artwork"}
+SECTIONS = {
+    "screenshots": 2,
+    "artwork"    : 3,
+    "images"     : 3,
+}
 
 
-class SteamcommunitySharedfileExtractor(Extractor):
-    """Extractor for steamcommunity shared files"""
+class SteamcommunityExtractor(Extractor):
+    """Base class for steamcommunity extractors"""
     category = "steamcommunity"
-    subcategory = "sharedfile"
     root = "https://steamcommunity.com"
-    directory_fmt = ("{category}", "{game}", "{content_type!c}")
-    filename_fmt = "{file_id} {title}.{extension}"
-    archive_fmt = "{game}_{file_id}_{ugc_id}"
+    directory_fmt = ("{category}", "{game_appid}", "{section!c}")
+    filename_fmt = "{file_id}{title:? //}.{extension}"
+    archive_fmt = "{game_appid}_{file_id}_{ugc_id}"
+    request_interval = (0.5, 1.5)
+
+
+class SteamcommunitySharedfileExtractor(SteamcommunityExtractor):
+    """Extractor for steamcommunity shared files"""
+    subcategory = "sharedfile"
     pattern = BASE_PATTERN + r"/sharedfiles/filedetails/\?id=(\d+)"
     example = "https://steamcommunity.com/sharedfiles/filedetails/?id=12345"
 
@@ -28,24 +37,21 @@ class SteamcommunitySharedfileExtractor(Extractor):
         fid = self.groups[0]
         url = f"{self.root}/sharedfiles/filedetails/?id={fid}"
         page = self.request(url).text
-        content_type = self._extract_content_type(page)
+
+        section = text.extr(
+            page, 'class="apphub_sectionTab active "><span>', '<').lower()
+        if section not in SECTIONS:
+            raise self.exc.AbortExtraction(f"Unsupported section '{section}'")
 
         meta = {
-            "content_type": content_type,
-            "file_id"     : fid,
-            "url"         : url,
+            "section": section,
+            "file_id": fid,
+            "url"    : url,
         }
 
-        return self.basic_image_items(page, meta)
+        return self.items_image(page, meta)
 
-    def _extract_content_type(self, page):
-        tab = text.extr(
-            page, 'class="apphub_sectionTab active "><span>', '<').lower()
-        if tab in CONTENT_TYPES:
-            return tab
-        raise self.exc.AbortExtraction(f"Unsupported content type '{tab}'")
-
-    def basic_image_items(self, page, meta):
+    def items_image(self, page, meta):
         extr = text.extract_from(page)
 
         data = {
@@ -75,10 +81,10 @@ class SteamcommunitySharedfileExtractor(Extractor):
         }
 
         if "," in (date := data["date"]):
-            data["date"] = self.parse_datetime(date, "%d %b, %Y @ %I:%M%p")
+            data["date"] = dt.parse(date, "%d %b, %Y @ %I:%M%p")
         else:
-            data["date"] = self.parse_datetime(
-                date, "%d %b @ %I:%M%p").replace(year=dt.datetime.now().year)
+            data["date"] = (dt.parse(date, "%d %b @ %I:%M%p")
+                            .replace(year=dt.datetime.now().year))
 
         img = text.extr(page, '<img id="ActualMedia"', '>')
         src = text.unescape(text.extr(img, 'src="', '"'))
@@ -88,3 +94,119 @@ class SteamcommunitySharedfileExtractor(Extractor):
 
         yield Message.Directory, "", data
         yield Message.Url, src, data
+
+
+class SteamcommunityGameExtractor(SteamcommunityExtractor):
+    subcategory = "game"
+    pattern = (BASE_PATTERN + r"/app/(\d+)/"
+               r"((?:screenshot|image)s)(?:/?\?([^#]+))?")
+    example = "https://steamcommunity.com/app/12345/screenshots/"
+
+    def items(self):
+        per_page = 10
+
+        if self.config("metadata"):
+            data = {"_extractor": SteamcommunitySharedfileExtractor}
+            base = "https://steamcommunity.com/sharedfiles/filedetails/?id="
+            find = SteamcommunitySharedfileExtractor.pattern.findall
+            for page in self._pagination(per_page):
+                post_ids = find(page)
+                for pid in post_ids:
+                    yield Message.Queue, base + pid, data
+                if len(post_ids) < per_page:
+                    break
+        else:
+            for page in self._pagination(per_page):
+                cards = page.split("<div data-panel=")
+                del cards[0]
+                for card in cards:
+                    data = self._extract_card(card)
+                    src = text.unescape(data.pop("url"))
+                    if (pos := src.find("?")) >= 0:
+                        src = src[:pos]
+                    data["ugc_id"] = src[src.find("/ugc/")+5:-1]
+
+                    yield Message.Directory, "", data
+                    yield Message.Url, src, data
+                if len(cards) < per_page:
+                    break
+
+    def _extract_card(self, card):
+        extr = text.extract_from(card)
+        data = {
+            "post_url": extr('data-modal-content-url="', '"'),
+            "game_appid": extr('data-appid="', '"'),
+            "file_id": extr('data-publishedfileid="', '"'),
+            "section": extr('class="apphub_CardContentType">', '<'),
+            "url": extr('src="', '"'),
+            "comments": extr('class="apphub_CardCommentCount">', '<'),
+            "title": text.unescape(extr(
+                'class="apphub_CardContentTitle ellipsis">', '<')).strip(),
+            "creator_id": extr('data-miniprofile="', '"'),
+            "extension" : "jpg",
+        }
+
+        creator = extr('class="apphub_CardContentAuthorName', "</")
+        data["creator"] = text.unescape(creator[creator.rfind(">")+1:])
+
+        return data
+
+    def _pagination(self, per_page=10):
+        app_id, type, qs = self.groups
+        url = f"{self.root}/app/{app_id}/homecontent/"
+        params = text.parse_query(qs)
+        pnum = text.parse_int(params.get("p"), 1)
+
+        params = {
+            "userreviewsoffset"  : "0",
+            "p"                  : None,
+            "workshopitemspage"  : None,
+            "readytouseitemspage": None,
+            "mtxitemspage"       : None,
+            "itemspage"          : None,
+            "screenshotspage"    : None,
+            "videospage"         : None,
+            "artpage"            : None,
+            "allguidepage"       : None,
+            "webguidepage"       : None,
+            "integratedguidepage": None,
+            "discussionspage"    : None,
+            "numperpage"         : str(per_page),
+            "browsefilter"       : "trend",
+            "appid"              : app_id,
+            "appHubSubSection"   : str(SECTIONS[type]),
+            "l"                  : "english",
+            "filterLanguage"     : "default",
+            "searchText"         : "",
+            "maxInappropriateScore": "100",
+            "forceanon"          : "1",
+            **params,
+        }
+        headers = {
+            "Accept": "text/javascript, text/html, application/xml, "
+                      "text/xml, */*",
+            "X-Requested-With": "XMLHttpRequest",
+            "X-Prototype-Version": "1.7",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+        }
+
+        while True:
+            params["p"] = \
+                params["workshopitemspage"] = \
+                params["readytouseitemspage"] = \
+                params["mtxitemspage"] = \
+                params["itemspage"] = \
+                params["screenshotspage"] = \
+                params["videospage"] = \
+                params["artpage"] = \
+                params["allguidepage"] = \
+                params["webguidepage"] = \
+                params["integratedguidepage"] = \
+                params["discussionspage"] = str(pnum)
+            html = self.request(url, params=params, headers=headers).text
+
+            yield html
+
+            pnum += 1
