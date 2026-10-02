@@ -47,49 +47,32 @@ class DcinsideGalleryExtractor(GalleryExtractor):
 
     def images(self, page):
         base = "https://image.dcinside.com/viewimage.php?no="
-
-        if abox := text.extr(page, 'class="appending_file_box', "</div>"):
-            results = []
-            for li in text.extract_iter(abox, "<li", "</li>"):
-                url = text.unescape(text.extr(li, 'href="', '"'))
-                data = text.parse_query(url[url.find("?")+1:])
-                if name := data.pop("f_no", None):
-                    text.nameext_from_name(name, data)
-                else:
-                    data["extension"] = "jpg"
-                key = data["no"]
-                if img := text.iextr(
-                        page, "/viewimagePop.php?no=" + key, "<img", ">"):
-                    data["fid"] = text.extr(img, '?id=', '&')
-                    data["hash"] = text.extr(img, 'alt="', '"')
-                    data["_fallback"] = (self._extract_image(img),)
-                results.append((base + key, data))
-            return results
+        abox = text.extr(page, 'class="appending_file_box', "</div>")
 
         if write_div := text.extr(page, 'class="write_div', "</div>"):
             results = []
             for img in text.extract_iter(write_div, "<img", ">"):
                 data = {
-                    "fid" : text.extr(img, '?id=', '&'),
-                    "hash": text.extr(img, ' alt="', '"'),
+                    "fid": text.extr(img, '?id=', '&'),
+                    "alt": text.extr(img, ' alt="', '"'),
                     "extension": "jpg",
                 }
+                url = text.unescape(text.extr(img, ' data-original="', '"') or
+                                    text.extr(img, ' src="', '"') or
+                                    text.extr(img, " src='", "'"))
                 if key := text.extr(img, "/viewimagePop.php?no=", "'"):
+                    data["_fallback"] = (url,)
+                    data["no"] = key
                     url = base + key
-                    data["_fallback"] = (self._extract_image(img),)
-                else:
-                    url = self._extract_image(img)
+                    if name := text.extr(abox, key + '&f_no=', '"'):
+                        text.nameext_from_name(
+                            text.unquote(text.unescape(name)), data)
                 results.append((url, data))
             return results
 
         if image := text.extr(page, '"image":{', '}'):
             url = text.extr(image, '"URL":"', '"')
             return ((url, {"extension": "jpg"}),)
-
-    def _extract_image(self, img):
-        return text.unescape(text.extr(img, ' data-original="', '"') or
-                             text.extr(img, ' src="', '"') or
-                             text.extr(img, " src='", "'"))
 
 
 class DcinsideUserExtractor(Extractor):

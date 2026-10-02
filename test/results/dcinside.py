@@ -28,7 +28,7 @@ __tests__ = (
         "asdasddwdwsd",
         "asdasddwdwsdDDFSD",
     },
-    "hash"        : {
+    "alt"         : {
         "2caed427f6d63cb16aa8c5b158c12a3a1ad241f0fad285a362abf5ad4a",
         "2caed427f6d63cb16aa8c5b132f5020e75544ba9563d9cf99c8ea652d451ad6b3b1a",
     },
@@ -57,7 +57,7 @@ __tests__ = (
     "extension"   : "png",
     "fid"         : "3dafdf2ce0d12cab76",
     "filename"    : "1783747949952",
-    "hash"        : "7cea8875b2866fff3ae68fe0449f3433a1b3fa7f1a302c6695f8b3906777b0",
+    "alt"         : "7cea8875b2866fff3ae68fe0449f3433a1b3fa7f1a302c6695f8b3906777b0",
     "id"          : 18786425,
     "no"          : "24b0d769e1d32ca73de785fa11d028311db29c13695a307ccacdd430f4f615f7eb84edfc6b29cdec234c8f75a949216a10eab94c2a4596f47cf00499df72a3da17535720fb0557cd190ac62903c4",
     "num"         : 1,
@@ -104,12 +104,34 @@ __tests__ = (
     "display_name": "쌈바라차차",
     "extension"   : "jpg",
     "fid"         : "22b3dc2d",
-    "hash"        : "a04810ad242eb553ae3417499a2dcc73408f8eac4f7b3157dcf1bb98b70cd7",
+    "alt"         : "a04810ad242eb553ae3417499a2dcc73408f8eac4f7b3157dcf1bb98b70cd7",
     "id"          : 2495,
     "num"         : 1,
     "title"       : "할로윈짤을 그렸사와요 - 플레이어(웹툰) 마이너 갤러리",
     "username"    : "tkaqkfkcici",
     "views"       : int,
+},
+
+{
+    "#url"     : "https://gall.dcinside.com/mgallery/board/view?id=wutheringwaves&no=2721769",
+    "#comment" : "external cloudfront-hosted images (#478)",
+    "#class"   : dcinside.DcinsideGalleryExtractor,
+    "#results" : (
+        "https://d2i2w6ttft7yxi.cloudfront.net/froala/2026/07/04/20260704074328_8kh10r57x3.jpg",
+        "https://d2i2w6ttft7yxi.cloudfront.net/froala/2026/07/04/20260704110530_016qjdxfew.jpg",
+        "https://d2i2w6ttft7yxi.cloudfront.net/froala/2026/07/04/20260704074409_7v2e1uq8nd.jpg",
+        "https://d2i2w6ttft7yxi.cloudfront.net/froala/2026/07/14/20260714051625_nt7ae1rbp5.jpg",
+        "https://image.dcinside.com/viewimage.php?no=24b0d769e1d32ca73de785fa1bd62531de535045b081fc7000c7a813d8d2c9295b1d1391039bb08bc508a1c07792007aa6d89d294720ebdc1c627b04282a2eb1ca3024fc30af",
+    ),
+
+    "board"       : "wutheringwaves",
+    "content"     : "🎁『7월 서코 커노의 스근한 판매점 통판 폼』 입니다!통판 기간 - 7월 14일 ~ 8월 7일 까지 입니다!🎁 작가 트위터 링크https://x.com/Kerno_kr🎁 통판 폼 링크https://witchform.com/payform/?uuid=ODIYYRKKKO데니아 에이메스 디오라마 실물입니다~현재 품절이었던 물품 (아트북 제외) 전부 재판 진행하겠습니다~극 소량도 제작해서 배송진행합니다!이번 행사도 구매해줘서 넘나링 감사룽다음 굿즈 캐릭터도 추천 받으니 댓글로 ㄱㄱㄱ",
+    "count"       : 5,
+    "date"        : "dt:2026-07-19 10:22:47",
+    "display_name": "커노",
+    "id"          : 2721769,
+    "title"       : "[7월 서코] 커노의 스근한 판매점 통판 폼 준비해왔따우~ - 명조 워더링 웨이브 마이너 갤러리",
+    "username"    : "cushion2768",
 },
 
 {
