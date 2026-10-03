@@ -1373,8 +1373,9 @@ class InstagramAPI():
 
             try:
                 data = util.json_loads(response.text)["data"][fieldname]
-            except (ValueError, KeyError):
-                break
+            except (ValueError, KeyError) as exc:
+                raise extr.exc.AbortExtraction(
+                    "Invalid Instagram profile response") from exc
 
             if "edges" not in data:
                 for value in data.values():
@@ -1382,13 +1383,18 @@ class InstagramAPI():
                         data = value
                         break
                 else:
-                    break
+                    raise extr.exc.AbortExtraction(
+                        "Instagram profile response has no posts")
 
             for edge in data["edges"]:
                 yield edge["node"]
 
             info = data.get("page_info")
-            if not info or not info.get("has_next_page"):
+            if not info:
+                raise extr.exc.AbortExtraction(
+                    "Instagram profile response has no page info")
+            if not info.get("has_next_page"):
+                extr._feed_exhausted = True
                 break
             variables["after"] = extr._update_cursor(info["end_cursor"])
 
