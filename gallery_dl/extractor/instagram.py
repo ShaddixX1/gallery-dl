@@ -1014,7 +1014,7 @@ class InstagramAPI():
                 "Accept": "text/html,application/xhtml+xml,"
                           "application/xml;q=0.9,*/*;q=0.8",
                 "Accept-Language": "en-US,en;q=0.5",
-                "Accept-Encoding": "gzip, deflate, br, zstd",
+                "Accept-Encoding": "gzip, deflate",
                 "Alt-Used": "www.instagram.com",
                 "Connection": "keep-alive",
                 "Sec-Fetch-Dest": "document",
@@ -1373,7 +1373,7 @@ class InstagramAPI():
 
             try:
                 data = util.json_loads(response.text)["data"][fieldname]
-            except (ValueError, KeyError) as exc:
+            except (ValueError, KeyError, TypeError) as exc:
                 raise extr.exc.AbortExtraction(
                     "Invalid Instagram profile response") from exc
 
